@@ -4,6 +4,8 @@ import { useForm } from "react-hook-form";
 import InputField from "../common/InputFIeld";
 import ButtonField from "../common/ButtonField";
 import Link from "next/link";
+import axiosInstance from "@/utils/axios";
+import { useRouter } from "next/navigation";
 
 interface SignupFormValues {
     name: string;
@@ -12,15 +14,21 @@ interface SignupFormValues {
 }
 
 const Signup: React.FC = () => {
+    const router = useRouter();
     const {
         register,
         handleSubmit,
         formState: { errors, isSubmitting },
     } = useForm<SignupFormValues>();
 
-    const onSubmit = (data: SignupFormValues) => {
-        // Handle signup logic here
-        console.log(data);
+    const onSubmit = async (data: SignupFormValues) => {
+        try {
+            const res = await axiosInstance.post("/auth/register", data);
+            router.push("/login");
+        } catch (error: any) {
+            alert(error.response?.data?.message || "Registration failed");
+            console.error("Registration Error:", error);
+        }
     };
 
     return (

@@ -4,6 +4,8 @@ import { useForm } from "react-hook-form";
 import InputField from "../common/InputFIeld";
 import ButtonField from "../common/ButtonField";
 import Link from "next/link";
+import axiosInstance from "@/utils/axios";
+import { useRouter } from "next/navigation";
 
 interface LoginFormValues {
     email: string;
@@ -11,15 +13,21 @@ interface LoginFormValues {
 }
 
 const Login: React.FC = () => {
+    const router = useRouter();
     const {
         register,
         handleSubmit,
         formState: { errors, isSubmitting },
     } = useForm<LoginFormValues>();
 
-    const onSubmit = (data: LoginFormValues) => {
-        // Handle login logic here
-        console.log(data);
+    const onSubmit = async (data: LoginFormValues) => {
+        try {
+            const res = await axiosInstance.post("/auth/login", data);
+            router.push("/tasks");
+        } catch (error: any) {
+            alert(error.response?.data?.message || "Login failed");
+            console.error("Login Error:", error);
+        }
     };
 
     return (
