@@ -176,6 +176,6 @@ export const login = async (req: Request, res: Response) => {
             }
         });
     } else {
-        res.status(401).json({ message: "Invalid credentials", code: 401 });
+        res.status(400).json({ message: "Invalid credentials", code: 400 });
     }
 };
