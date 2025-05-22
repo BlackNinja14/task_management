@@ -23,13 +23,17 @@ export const getTasks = async (req: any, res: Response) => {
       .sort({ createdAt: -1 });
 
     res.status(200).json({
-      tasks,
-      total,
-      page,
-      pages: Math.ceil(total / limit),
+      message: "Tasks fetched successfully",
+      code: 200,
+      data: {
+        tasks,
+        total,
+        page,
+        pages: Math.ceil(total / limit),
+      },
     });
   } catch (error) {
-    res.status(500).json({ message: "Failed to fetch tasks" });
+    res.status(500).json({ message: "Failed to fetch tasks", code: 500 });
   }
 };
 export const addTask = async (req: any, res: Response) => {
@@ -41,8 +45,12 @@ export const addTask = async (req: any, res: Response) => {
       description,
       date,
     });
-    res.status(201).json(task);
+    res.status(201).json({
+      message: "Task added successfully",
+      code: 201,
+      data: task,
+    });
   } catch (error) {
-    res.status(400).json({ message: "Failed to add task" });
+    res.status(500).json({ message: "Failed to add task", code: 500 });
   }
 };

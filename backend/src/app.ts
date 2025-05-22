@@ -4,17 +4,19 @@ import connectDB from "./config/db";
 import authRoutes from "./routes/auth.routes";
 import taskRoutes from "./routes/task.routes";
 import cors from "cors";
+import { swaggerUi, swaggerSpec } from "./swagger";
 
 dotenv.config();
 connectDB();
 
 const app = express();
 app.use(cors({
-  origin: "http://localhost:3000", // frontend origin
+  origin: "http://localhost:3000",
   credentials: true,
 }));
 app.use(express.json());
 
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/api/auth", authRoutes);
 app.use("/api/tasks", taskRoutes);
 
