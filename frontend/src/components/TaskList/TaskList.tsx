@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useMemo, useEffect } from "react";
+import debounce from "lodash.debounce";
 import axiosInstance from "@/utils/axios";
 import ButtonField from "../common/ButtonField";
 import AddTask, { TaskFormValues } from "./AddTask";
@@ -25,6 +26,13 @@ const TaskList = ({ taskList }: { taskList: ITaskList }) => {
   const [page, setPage] = useState(taskList?.page);
   const [totalPages, setTotalPages] = useState(taskList?.pages);
   const [isLoading, setIsLoading] = useState(false);
+
+  const debouncedSetSearch = React.useCallback(
+    debounce((value: string) => {
+      setSearch(value);
+    }, 800),
+    []
+  );
 
   const handleAddTask = (data: TaskFormValues) => {
     setTasks([
@@ -53,7 +61,6 @@ const TaskList = ({ taskList }: { taskList: ITaskList }) => {
       setPage(res.data.page);
       setTotalPages(res.data.pages);
     } catch (error) {
-      // Optionally handle error
     } finally {
       setIsLoading(false);
     }
@@ -61,7 +68,6 @@ const TaskList = ({ taskList }: { taskList: ITaskList }) => {
 
   useEffect(() => {
     fetchTasks(1);
-    // eslint-disable-next-line
   }, [search]);
 
   return (
@@ -89,8 +95,7 @@ const TaskList = ({ taskList }: { taskList: ITaskList }) => {
               type="text"
               placeholder="Search tasks..."
               className="w-full sm:w-80 px-4 py-2 rounded-xl border border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => debouncedSetSearch(e.target.value)}
             />
           </div>
 
