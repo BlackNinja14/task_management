@@ -1,7 +1,9 @@
 'use client';
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
+import axiosInstance from "@/utils/axios";
 import ButtonField from "../common/ButtonField";
 import AddTask, { TaskFormValues } from "./AddTask";
+import { getCookie } from "cookies-next";
 
 interface Task {
   id: number;
@@ -9,14 +11,20 @@ interface Task {
   description: string;
   date: string;
 }
+interface ITaskList {
+  tasks: Task[];
+  total: number;
+  page: number;
+  pages: number;
+}
 
-const TASKS_PER_PAGE = 5;
-
-const TaskList: React.FC = () => {
-  const [tasks, setTasks] = useState<Task[]>([]);
+const TaskList = ({ taskList }: { taskList: ITaskList }) => {
+  const [tasks, setTasks] = useState<Task[]>(taskList.tasks);
   const [showAdd, setShowAdd] = useState(false);
   const [search, setSearch] = useState("");
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(taskList?.page);
+  const [totalPages, setTotalPages] = useState(taskList?.pages);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleAddTask = (data: TaskFormValues) => {
     setTasks([
@@ -30,24 +38,30 @@ const TaskList: React.FC = () => {
     ]);
   };
 
-  const filteredTasks = useMemo(
-    () =>
-      tasks.filter(
-        (task) =>
-          task.name.toLowerCase().includes(search.toLowerCase()) ||
-          task.description.toLowerCase().includes(search.toLowerCase())
-      ),
-    [tasks, search]
-  );
+  const fetchTasks = async (pageNum: number) => {
+    setIsLoading(true);
+    try {
+      const res = await axiosInstance.get("/tasks", {
+        headers: { Authorization: `Bearer ${getCookie('access')}` },
+        params: {
+          page: pageNum,
+          limit: 10,
+          search,
+        },
+      });
+      setTasks(res.data.tasks);
+      setPage(res.data.page);
+      setTotalPages(res.data.pages);
+    } catch (error) {
+      // Optionally handle error
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-  const totalPages = Math.ceil(filteredTasks.length / TASKS_PER_PAGE);
-  const paginatedTasks = filteredTasks.slice(
-    (page - 1) * TASKS_PER_PAGE,
-    page * TASKS_PER_PAGE
-  );
-
-  React.useEffect(() => {
-    setPage(1);
+  useEffect(() => {
+    fetchTasks(1);
+    // eslint-disable-next-line
   }, [search]);
 
   return (
@@ -81,7 +95,7 @@ const TaskList: React.FC = () => {
           </div>
 
           {/* No tasks */}
-          {filteredTasks.length === 0 ? (
+          {tasks.length === 0 && !isLoading ? (
             <div className="flex flex-col items-center justify-center h-80">
               <p className="mb-4 text-lg text-gray-500 font-medium">
                 No tasks found.
@@ -94,6 +108,8 @@ const TaskList: React.FC = () => {
                 + Add Task
               </ButtonField>
             </div>
+          ) : isLoading ? (
+            <div className="flex items-center justify-center h-40 text-blue-600 font-semibold">Loading...</div>
           ) : (
             <>
               {/* Task Table */}
@@ -107,7 +123,7 @@ const TaskList: React.FC = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {paginatedTasks.map((task) => (
+                    {tasks.map((task) => (
                       <tr key={task.id} className="hover:bg-blue-50 transition">
                         <td className="py-4 px-6 border-b font-medium text-gray-800">{task.name}</td>
                         <td className="py-4 px-6 border-b text-gray-600">
@@ -127,8 +143,8 @@ const TaskList: React.FC = () => {
                 <ButtonField
                   type="button"
                   className="px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600 shadow disabled:opacity-50"
-                  onClick={() => setPage((p) => Math.max(1, p - 1))}
-                  disabled={page === 1}
+                  onClick={() => fetchTasks(page - 1)}
+                  disabled={page === 1 || isLoading}
                 >
                   Previous
                 </ButtonField>
@@ -138,8 +154,8 @@ const TaskList: React.FC = () => {
                 <ButtonField
                   type="button"
                   className="px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600 shadow disabled:opacity-50"
-                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                  disabled={page === totalPages || totalPages === 0}
+                  onClick={() => fetchTasks(page + 1)}
+                  disabled={page === totalPages || totalPages === 0 || isLoading}
                 >
                   Next
                 </ButtonField>

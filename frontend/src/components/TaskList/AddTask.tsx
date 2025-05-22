@@ -2,6 +2,9 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import InputField from "../common/InputFIeld";
 import ButtonField from "../common/ButtonField";
+import axios from "axios";
+import axiosInstance from "@/utils/axios";
+import { getCookie } from "cookies-next";
 
 interface AddTaskProps {
     onClose: () => void;
@@ -22,10 +25,16 @@ const AddTask: React.FC<AddTaskProps> = ({ onClose, onSubmitTask }) => {
         formState: { errors, isSubmitting },
     } = useForm<TaskFormValues>();
 
-    const onSubmit = (data: TaskFormValues) => {
-        onSubmitTask(data);
-        reset();
-        onClose();
+    const onSubmit = async (data: TaskFormValues) => {
+        try {
+            const addTask = await axiosInstance.post('/tasks', data, { headers: { Authorization: `Bearer ${getCookie('access')}` } });
+            onSubmitTask(data);
+            reset();
+            onClose();
+        }
+        catch (error) {
+            console.error("Error adding task:", error);
+        }
     };
 
     return (
@@ -45,8 +54,8 @@ const AddTask: React.FC<AddTaskProps> = ({ onClose, onSubmitTask }) => {
                         <label className="block mb-2 text-base font-medium text-gray-700">Description</label>
                         <textarea
                             className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 text-base ${errors.description
-                                    ? "border-red-500 focus:ring-red-400"
-                                    : "focus:ring-blue-400"
+                                ? "border-red-500 focus:ring-red-400"
+                                : "focus:ring-blue-400"
                                 }`}
                             placeholder="Task description"
                             {...register("description")}
