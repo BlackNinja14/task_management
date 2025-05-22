@@ -1,7 +1,8 @@
 {
-  "name": "frontend",
+  "name": "task_management_frontend",
   "version": "0.1.0",
   "private": true,
+  "author": "Niladri Barui",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",

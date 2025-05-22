@@ -7,7 +7,7 @@ import Link from "next/link";
 import axiosInstance from "@/utils/axios";
 import { useRouter } from "next/navigation";
 
-interface SignupFormValues {
+interface ISignupFormValues {
     name: string;
     email: string;
     password: string;
@@ -19,14 +19,14 @@ const Signup: React.FC = () => {
         register,
         handleSubmit,
         formState: { errors, isSubmitting },
-    } = useForm<SignupFormValues>();
+    } = useForm<ISignupFormValues>();
 
-    const onSubmit = async (data: SignupFormValues) => {
+    const onSubmit = async (data: ISignupFormValues) => {
         try {
             const res = await axiosInstance.post("/auth/register", data);
+            alert("Registration successful! Please log in.");
             router.push("/login");
         } catch (error: any) {
-            alert(error.response?.data?.message || "Registration failed");
             console.error("Registration Error:", error);
         }
     };

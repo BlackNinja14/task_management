@@ -10,15 +10,12 @@ const Page: React.FC = async () => {
     let getTasks;
     try {
         getTasks = await axiosInstance.get('/tasks', { headers: { Authorization: `Bearer ${cookieStore.get('access')?.value}` } });
-        console.log(getTasks)
     }
     catch {
         redirect('/login')
     }
     return (
-        <div>
-            <TaskList taskList={getTasks.data} />
-        </div>
+        <TaskList taskList={getTasks.data.data} />
     );
 };
 

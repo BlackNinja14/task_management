@@ -8,7 +8,7 @@ import axiosInstance from "@/utils/axios";
 import { useRouter } from "next/navigation";
 import { setCookie } from "cookies-next";
 
-interface LoginFormValues {
+interface ILoginFormValues {
     email: string;
     password: string;
 }
@@ -19,12 +19,12 @@ const Login: React.FC = () => {
         register,
         handleSubmit,
         formState: { errors, isSubmitting },
-    } = useForm<LoginFormValues>();
+    } = useForm<ILoginFormValues>();
 
-    const onSubmit = async (data: LoginFormValues) => {
+    const onSubmit = async (data: ILoginFormValues) => {
         try {
             const res = await axiosInstance.post("/auth/login", data);
-            setCookie("access", res.data.token);
+            setCookie("access", res.data.user.token);
             router.push("/tasks");
         } catch (error: any) {
             alert(error.response?.data?.message || "Login failed");

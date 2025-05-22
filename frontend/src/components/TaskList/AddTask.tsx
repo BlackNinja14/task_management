@@ -15,6 +15,7 @@ export interface TaskFormValues {
     name: string;
     description: string;
     date: string;
+    _id?: string;
 }
 
 const AddTask: React.FC<AddTaskProps> = ({ onClose, onSubmitTask }) => {
@@ -28,9 +29,11 @@ const AddTask: React.FC<AddTaskProps> = ({ onClose, onSubmitTask }) => {
     const onSubmit = async (data: TaskFormValues) => {
         try {
             const addTask = await axiosInstance.post('/tasks', data, { headers: { Authorization: `Bearer ${getCookie('access')}` } });
-            onSubmitTask(data);
+            console.log(addTask.data.data)
+            onSubmitTask({ ...data, _id: addTask.data.data._id });
             reset();
             onClose();
+            alert("Task added successfully!");
         }
         catch (error) {
             console.error("Error adding task:", error);

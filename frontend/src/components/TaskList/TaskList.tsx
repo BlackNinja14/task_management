@@ -7,7 +7,7 @@ import AddTask, { TaskFormValues } from "./AddTask";
 import { getCookie } from "cookies-next";
 
 interface Task {
-  id: number;
+  _id: string;
   name: string;
   description: string;
   date: string;
@@ -30,23 +30,24 @@ const TaskList = ({ taskList }: { taskList: ITaskList }) => {
   const debouncedSetSearch = React.useCallback(
     debounce((value: string) => {
       setSearch(value);
+      fetchTasks(1, value);
     }, 800),
     []
   );
 
   const handleAddTask = (data: TaskFormValues) => {
     setTasks([
-      ...tasks,
       {
-        id: Date.now(),
+        _id: `${data._id}`,
         name: data.name.trim(),
         description: data.description.trim(),
         date: data.date,
       },
+      ...tasks
     ]);
   };
 
-  const fetchTasks = async (pageNum: number) => {
+  const fetchTasks = async (pageNum: number, searchData?: string) => {
     setIsLoading(true);
     try {
       const res = await axiosInstance.get("/tasks", {
@@ -54,21 +55,17 @@ const TaskList = ({ taskList }: { taskList: ITaskList }) => {
         params: {
           page: pageNum,
           limit: 10,
-          search,
+          search: searchData ?? search,
         },
       });
-      setTasks(res.data.tasks);
-      setPage(res.data.page);
-      setTotalPages(res.data.pages);
+      setTasks(res.data.data.tasks);
+      setPage(res.data.data.page);
+      setTotalPages(res.data.data.pages);
     } catch (error) {
     } finally {
       setIsLoading(false);
     }
   };
-
-  useEffect(() => {
-    fetchTasks(1);
-  }, [search]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex flex-col">
@@ -129,7 +126,7 @@ const TaskList = ({ taskList }: { taskList: ITaskList }) => {
                   </thead>
                   <tbody>
                     {tasks.map((task) => (
-                      <tr key={task.id} className="hover:bg-blue-50 transition">
+                      <tr key={`${task._id}`} className="hover:bg-blue-50 transition">
                         <td className="py-4 px-6 border-b font-medium text-gray-800">{task.name}</td>
                         <td className="py-4 px-6 border-b text-gray-600">
                           {task.description || (
