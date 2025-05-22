@@ -1,3 +1,8 @@
+/*
+  This component provides a modal form for adding a new task in the Task Management Platform.
+  It uses react-hook-form for validation, and submits the new task to the backend API.
+  On success, it updates the parent list and closes the modal.
+*/
 import React from "react";
 import { useForm } from "react-hook-form";
 import InputField from "../common/InputFIeld";
@@ -5,6 +10,7 @@ import ButtonField from "../common/ButtonField";
 import axios from "axios";
 import axiosInstance from "@/utils/axios";
 import { getCookie } from "cookies-next";
+
 
 interface AddTaskProps {
     onClose: () => void;

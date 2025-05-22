@@ -1,3 +1,9 @@
+/*
+  This page is responsible for displaying the user's task list.
+  It fetches tasks from the backend using the access token from cookies.
+  If the user is not authenticated, they are redirected to the login page.
+*/
+
 import Login from '@/components/Auth/Login';
 import TaskList from '@/components/TaskList/TaskList';
 import axiosInstance from '@/utils/axios';

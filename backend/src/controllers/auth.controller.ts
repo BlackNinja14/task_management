@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import User from "../models/user.model";
 import generateToken from "../utils/generateToken";
 
-
 //  i'm just adding this swagger for auth routes only.
 /**
  * @swagger
@@ -64,6 +63,11 @@ import generateToken from "../utils/generateToken";
  *                 code:
  *                   type: integer
  *                   example: 400
+ */
+
+/**
+ * Register a new user
+ * Checks if the user already exists, creates a new user if not, and returns a success or error response.
  */
 export const register = async (req: Request, res: Response): Promise<void> => {
     const { name, email, password } = req.body;
@@ -150,6 +154,11 @@ export const register = async (req: Request, res: Response): Promise<void> => {
  *                 code:
  *                   type: integer
  *                   example: 401
+ */
+
+/**
+ * Login a user
+ * Checks credentials, generates a JWT token if valid, and returns user info and token.
  */
 export const login = async (req: Request, res: Response) => {
     const { email, password } = req.body;

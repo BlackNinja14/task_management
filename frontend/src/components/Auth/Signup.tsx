@@ -1,3 +1,9 @@
+/*
+  This component handles user registration for the Task Management Platform.
+  It provides a form for users to sign up with their name, email, and password.
+  On successful registration, the user is redirected to the login page.
+  Validation and error handling are included for a smooth user experience.
+*/
 'use client'
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -6,6 +12,7 @@ import ButtonField from "../common/ButtonField";
 import Link from "next/link";
 import axiosInstance from "@/utils/axios";
 import { useRouter } from "next/navigation";
+
 
 interface ISignupFormValues {
     name: string;

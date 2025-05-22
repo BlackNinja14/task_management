@@ -1,3 +1,10 @@
+/*
+  This middleware is responsible for protecting routes that require authentication.
+  It checks for a valid JWT token in the Authorization header, verifies it,
+  and attaches the corresponding user to the request object. If the token is missing,
+  invalid, or the user does not exist, it responds with a 401 Unauthorized error.
+*/
+
 import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 import User from "../models/user.model";

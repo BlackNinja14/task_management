@@ -1,4 +1,10 @@
+/*
+  This is a reusable input field component for forms in the Task Management Platform.
+  It supports labels, error display, custom styling, and accessibility features.
+  Use this component to keep input UI and validation consistent across the app.
+*/
 import React from "react";
+
 
 interface InputFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
     label?: string;

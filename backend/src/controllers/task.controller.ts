@@ -1,6 +1,9 @@
 import { Request, Response } from "express";
 import Task from "../models/task.model";
 
+/** 
+ * Controller to get tasks for the logged-in user, with search and pagination
+ */
 export const getTasks = async (req: any, res: Response) => {
   try {
     const userId = req.user._id;
@@ -36,6 +39,11 @@ export const getTasks = async (req: any, res: Response) => {
     res.status(500).json({ message: "Failed to fetch tasks", code: 500 });
   }
 };
+
+/** 
+ * Controller to add a new task for the logged-in user
+ */
+
 export const addTask = async (req: any, res: Response) => {
   try {
     const { name, description, date } = req.body;

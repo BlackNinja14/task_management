@@ -1,3 +1,9 @@
+/*
+  This is a reusable button component for the Task Management Platform.
+  It supports loading states, custom classes, and is styled with Tailwind CSS.
+  Use this component throughout the app for consistent button UI and behavior.
+*/
+
 import React from "react";
 
 interface ButtonFieldProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {

@@ -1,3 +1,9 @@
+/*
+  This component handles the login functionality for the Task Management Platform.
+  It provides a form for users to enter their email and password, validates input,
+  and submits the credentials to the backend. On successful login, the user is redirected
+  to the tasks page. If login fails, an error message is shown.
+*/
 'use client'
 import React from "react";
 import { useForm } from "react-hook-form";

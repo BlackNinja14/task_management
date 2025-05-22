@@ -1,3 +1,9 @@
+/*
+  This file sets up a pre-configured axios instance for making HTTP requests to the backend API.
+  It automatically attaches credentials, handles base URL configuration, and includes interceptors
+  for request and response. If a 401 Unauthorized error is received, it redirects the user to the login page.
+*/
+
 import axios from "axios";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;

@@ -1,3 +1,9 @@
+/*
+  This middleware protects the /tasks route on the frontend.
+  It checks if the user has a valid 'access' cookie (authentication token).
+  If not, it redirects the user to the login page. Otherwise, it allows access.
+*/
+
 import { NextRequest, NextResponse } from 'next/server';
 
 export function middleware(request: NextRequest) {

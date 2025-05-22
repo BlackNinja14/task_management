@@ -1,3 +1,8 @@
+/*
+  This component displays the main task list for the Task Management Platform.
+  It handles searching, pagination, and adding new tasks, all with a modern UI.
+  Tasks are fetched from the backend and shown in a table with live updates.
+*/
 'use client';
 import React, { useState, useMemo, useEffect } from "react";
 import debounce from "lodash.debounce";
@@ -5,6 +10,7 @@ import axiosInstance from "@/utils/axios";
 import ButtonField from "../common/ButtonField";
 import AddTask, { TaskFormValues } from "./AddTask";
 import { getCookie } from "cookies-next";
+
 
 interface Task {
   _id: string;
