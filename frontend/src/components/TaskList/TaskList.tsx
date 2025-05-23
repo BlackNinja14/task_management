@@ -4,7 +4,7 @@
   Tasks are fetched from the backend and shown in a table with live updates.
 */
 'use client';
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useRef, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import debounce from "lodash.debounce";
 import axiosInstance from "@/utils/axios";
@@ -39,6 +39,8 @@ const fetchTasks = async ({
 };
 
 const TaskList = ({ taskList }: { taskList: ITaskList }) => {
+  const isFirstRender = useRef(true);
+
   const [showAdd, setShowAdd] = useState(false);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(taskList.page);
@@ -62,16 +64,22 @@ const TaskList = ({ taskList }: { taskList: ITaskList }) => {
     error,
   } = useQuery<ITaskList, any, ITaskList, [string, number, string]>({
     queryKey: ["tasks", page, search],
-    queryFn: () => fetchTasks({ queryKey: ["tasks", page, search] })
+    queryFn: () => fetchTasks({ queryKey: ["tasks", page, search] }),
+    enabled: !isFirstRender.current,
+    initialData: isFirstRender.current ? taskList : undefined,
   });
 
-  React.useEffect(() => {
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
     if (isError && error) {
       setErrorMsg((error as any)?.response?.data?.message || "Failed to fetch tasks");
     }
   }, [isError, error]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (data) {
       setTasks(data.tasks);
       setTotalPages(data.pages);
